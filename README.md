@@ -5,6 +5,7 @@ A simple command line tool to tweet and toot at the same time.
 
 create a .env file with the following environment variables
 
+```
 TW_CONKEY = ""
 TW_CONSEC = ""
 TW_ACCTOK = ""
@@ -12,6 +13,7 @@ TW_ACCTOKSEC = ""
 MAS_BASEURL = ""
 MAS_LOGIN = ""
 MAS_PASSWORD = ""
+```
 
 ## Useage
 
