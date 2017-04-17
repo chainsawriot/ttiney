@@ -15,7 +15,7 @@ MAS_LOGIN = ""
 MAS_PASSWORD = ""
 ```
 
-## Useage
+## Usage
 
 Either
 
