@@ -6,3 +6,5 @@ source "https://rubygems.org"
 gem "twitter"
 gem "mastodon-api"
 gem 'oauth2'
+gem 'dotenv'
+gem 'highline'

@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+require 'mastodon'
+require 'twitter'
+require 'oauth2'
+require 'dotenv'
+require 'highline/import'
+
+Dotenv.load
+
+twitterclient = Twitter::REST::Client.new do |config|
+  config.consumer_key        = ENV['TW_CONKEY']
+  config.consumer_secret     = ENV['TW_CONSEC']
+  config.access_token        = ENV['TW_ACCTOK']
+  config.access_token_secret = ENV['TW_ACCTOKSEC']
+end
+
+if !ENV["MAS_ACCTOK"]
+  puts "No Mastodon Token. Generate a new one!\n"
+  mastodonclient = Mastodon::REST::Client.new(base_url: ENV['MAS_BASEURL'])
+  app = mastodonclient.create_app('ttiney', "urn:ietf:wg:oauth:2.0:oob", 'read write follow')
+  oauthclient = OAuth2::Client.new(app.client_id, app.client_secret, site: ENV['MAS_BASEURL'])
+  token = oauthclient.password.get_token(ENV['MAS_LOGIN'], ENV['MAS_PASSWORD'], scope: 'read write follow')
+  ENV["MAS_ACCTOK"] = token.token
+  File.open(".env", "a+") do |f|
+    f.write "MAS_ACCTOK = '#{ENV["MAS_ACCTOK"]}'\n"
+  end
+end
+
+mastodonclient = Mastodon::REST::Client.new(base_url: ENV['MAS_BASEURL'], bearer_token: ENV['MAS_ACCTOK'])
+
+message = ARGV[0] || ask("Your Message: ")
+
+mastodonclient.create_status(message)
+twitterclient.update(message)
