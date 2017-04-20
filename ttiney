@@ -31,5 +31,16 @@ mastodonclient = Mastodon::REST::Client.new(base_url: ENV['MAS_BASEURL'], bearer
 
 message = ARGV[0] || ask("Your Message: ")
 
-mastodonclient.create_status(message)
+if message.length > 500
+  puts "Message trimmed.\n"
+  message = message[0,500]
+end
+
+res = mastodonclient.create_status(message)
+
+if message.length > 140
+  puts "Too long for twitter (>140 chars).\n"
+  message = message[0,100]
+  message += "... " + res.url
+end
 twitterclient.update(message)
